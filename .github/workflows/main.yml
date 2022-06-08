@@ -1,0 +1,33 @@
+# NOMEAR O WORKFLOW
+name: main
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ "main" ]
+
+# JOBS: são processos que executam em ambientes separados
+jobs:
+
+  # CI: Responsável por testar o código da nossa aplicação
+  CI:
+    
+    # Sistema Operacional (SO) que o JOB será executado
+    runs-on: ubuntu-latest
+    
+    # Definindo a imagem do container
+    container:
+      image: salesforce/salesforcedx
+    
+    # Passos do JOB
+    steps:
+      - uses: action/checkout@v2
+
+      - name: VALIDATE PACKAGE
+        run: |
+          echo force://${{ secrets.CLI_APP }}::${{ secrets.USER_TOKEN }}@${{ secrets.SF_URL }} >> config/auth.txt
+          sfdx force:auth:sfdxurl:store -f config/auth.txt -s -a MyOrg
+          sfdx force:org:create -f config/project-scratch-def.json -a CIOrg -s -v MyOrg
+          sfdx force:source:push -u CIOrg
+          sfdx force:apex:test:run -l RunLocalTests -u CIOrg -c -r human -w 2 --verbose
+          sfdx force:org:delete -u CIOrg -p
