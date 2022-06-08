@@ -1,25 +1,25 @@
-#NOMEAR O WORKFLOW
+# NOMEAR O WORKFLOW
 name: main
 
-#Qual evento que dispara este workflow ?
+# Controls when the workflow will run
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
 
-# JOBS SAO PROCESSOS QUE EXECUTAM EM AMBIENTES SEPARADOS
+# JOBS: são processos que executam em ambientes separados
 jobs:
-  
-  #CI : Responsavel por testar o codigo da nossa aplicacao
+
+  # CI: Responsável por testar o código da nossa aplicação
   CI:
     
-    #SO que o job sera executado
+    # Sistema Operacional (SO) que o JOB será executado
     runs-on: ubuntu-latest
     
-    #Definindo a imagem do container
+    # Definindo a imagem do container
     container:
       image: salesforce/salesforcedx:latest-rc-full
     
-    #Passos do meu Job
+    # Passos do JOB
     steps:
       - uses: actions/checkout@v2
 
